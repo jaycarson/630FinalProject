@@ -65,13 +65,15 @@ class Hero(object):
         self.wisdom = randrange(1, 7) + randrange(1, 7) + randrange(1, 7)
         self.charisma = randrange(1, 7) + randrange(1, 7) + randrange(1, 7)
 
-        self.max_health = 50 + ((self.constitution - 10) / 2) * 5
+        self.max_health = 50 + ((self.constitution - 10) // 2) * 5
         self.health = self.max_health
 
     def attack(self, target):
         if((randrange(1, 21) + self.attack_roll) >= target.armor_class):
             for x in range(self.weapon_rolls):
-                target.health -= randrange(1, self.weapon_roll + 1)
+                damage = randrange(1, self.weapon_roll + 1)
+                target.health -= damage
+                print("    " + str(self.id) + ": Damage Done: " + str(damage) + " / " + str(target.health))
 
     def save(self):
         return
