@@ -93,7 +93,7 @@ class Weapons(object):
         self.add('Glaive', 10, 20, True)
         self.add('Morning Star', 8, 15)
         self.add('Shortsword', 6, 10)
-        self.add('Greatsword', 6, 50, rolls=2, two_handed=50)
+        self.add('Greatsword', 6, 50, rolls=2, two_handed=True)
 
     def add(self, name, roll, cost, rolls=1, two_handed=False):
         self.weapons[name] = {'roll': roll, 'cost': cost, 'rolls': rolls, 'two-handed': two_handed}
