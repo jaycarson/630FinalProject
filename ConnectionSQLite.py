@@ -48,7 +48,9 @@ class ConnectionSQLite(object):
             WEAPON_NAME    VARCHAR(20) NOT NULL,
             ARMOR_NAME     VARCHAR(20) NOT NULL,
             SHIELDED       INT         NOT NULL,
-            MAX_POTIONS    INT         NOT NULL
+            MAX_POTIONS    INT         NOT NULL,
+            FOREIGN KEY(WEAPON_NAME) REFERENCES WEAPONS(NAME),
+            FOREIGN KEY(ARMOR_NAME) REFERENCES ARMORS(NAME)
             );'''
 
         weapons = '''CREATE TABLE WEAPONS (
@@ -74,18 +76,22 @@ class ConnectionSQLite(object):
             START_HEALTH    INT,
             CHANGE          INT,
             END_HEALTH      INT,
-            ROLL            INT
+            ROLL            INT,
+            FOREIGN KEY(SOURCE_ID) REFERENCES HEROES(ID),
+            FOREIGN KEY(TARGET_ID) REFERENCES HEROES(ID)
         );'''
 
         results = '''CREATE TABLE RESULTS (
             ID          INT PRIMARY KEY NOT NULL,
             WINNER_ID   INT             NOT NULL,
-            LOSER_ID    INT             NOT NULL
+            LOSER_ID    INT             NOT NULL,
+            FOREIGN KEY(WINNER_ID) REFERENCES HEROES(ID),
+            FOREIGN KEY(LOSER_ID) REFERENCES HEROES(ID)
         );'''
 
-        self.execute(heroes)
         self.execute(weapons)
         self.execute(armors)
+        self.execute(heroes)
         self.execute(logs)
         self.execute(results)
 
