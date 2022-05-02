@@ -101,7 +101,10 @@ class ConnectionSQLite(object):
         values += str(attack_roll) + ', '
         values += "'" + str(weapon_name) + "', "
         values += "'" + str(armor_name) + "', "
-        values += str(shielded) + ', '
+        if shielded:
+            values += '1, '
+        else:
+            value += '0, '
         values += str(max_potions)
 
         self.execute(insert + ' VALUES (' + values + ');')
@@ -112,7 +115,10 @@ class ConnectionSQLite(object):
         values += str(roll) + ', '
         values += str(cost) + ', '
         values += str(rolls) + ', '
-        values += str(two_handed)
+        if two_handed:
+            values += '1'
+        else:
+            values += '0'
 
         self.execute(insert + ' VALUES (' + values + ');')
 
@@ -137,10 +143,10 @@ class ConnectionSQLite(object):
         return self.conn.execute('SELECT ' + str(attr) + ' FROM HEROES WHERE ID = ' + str(hero_id)).fetchone()[0]
 
     def get_armor_cost(self, name):
-        return self.conn.execute('SELECT COST FROM ARMORS WHERE NAME="' + str(name) + '"').fetchone()[0]
+        return self.conn.execute("SELECT COST FROM ARMORS WHERE NAME='" + str(name) + "'").fetchone()[0]
 
     def get_armor_class(self, name):
-        return self.conn.execute('SELECT AC FROM ARMORS WHERE NAME="' + str(name) + '"').fetchone()[0]
+        return self.conn.execute("SELECT AC FROM ARMORS WHERE NAME='" + str(name) + "'").fetchone()[0]
 
     def get_random_armor_name(self):
         cursor = self.conn.execute('SELECT NAME FROM ARMORS')
@@ -157,21 +163,24 @@ class ConnectionSQLite(object):
         return choice(list(values))
 
     def get_weapon_cost(self, name):
-        return self.conn.execute('SELECT COST FROM WEAPONS WHERE NAME="' + name + '"').fetchone()[0]
+        return self.conn.execute("SELECT COST FROM WEAPONS WHERE NAME='" + name + "'").fetchone()[0]
 
     def get_weapon_roll(self, name):
-        return self.conn.execute('SELECT ROLL FROM WEAPONS WHERE NAME="' + name + '"').fetchone()[0]
+        return self.conn.execute("SELECT ROLL FROM WEAPONS WHERE NAME='" + name + "'").fetchone()[0]
 
     def get_weapon_rolls(self, name):
-        return self.conn.execute('SELECT ROLLS FROM WEAPONS WHERE NAME="' + name + '"').fetchone()[0]
+        return self.conn.execute("SELECT ROLLS FROM WEAPONS WHERE NAME='" + name + "'").fetchone()[0]
 
     def is_weapon_two_handed(self, name):
-        return self.conn.execute('SELECT TWO_HANDED FROM WEAPONS WHERE NAME="' + name + '"').fetchone()[0]
+        if self.conn.execute("SELECT TWO_HANDED FROM WEAPONS WHERE NAME='" + name + "'").fetchone()[0] == 1:
+            return True
+        else:
+            return False
 
     def log_hit(self, source, target, start_health, change, end_health, roll):
         insert = 'INSERT INTO COMBAT_LOG (ID,TYPE,SOURCE_ID,TARGET_ID,START_HEALTH,CHANGE,END_HEALTH,ROLL)'
         values = str(self.count) + ', '
-        values += '"HIT", '
+        values += "'HIT', "
         values += str(source) + ', '
         values += str(target) + ', '
         values += str(start_health) + ', '
@@ -185,7 +194,7 @@ class ConnectionSQLite(object):
     def log_miss(self, source, target, roll):
         insert = 'INSERT INTO COMBAT_LOG (ID,TYPE,SOURCE_ID,TARGET_ID,ROLL)'
         values = str(self.count) + ', '
-        values += '"MISS", '
+        values += "'MISS', "
         values += str(source) + ', '
         values += str(target) + ', '
         values += str(roll)
@@ -196,7 +205,7 @@ class ConnectionSQLite(object):
     def log_heal(self, source, start_health, change, end_health):
         insert = 'INSERT INTO COMBAT_LOG (ID,TYPE,SOURCE_ID,TARGET_ID,START_HEALTH,CHANGE,END_HEALTH)'
         values = str(self.count) + ', '
-        values += '"HEAL", '
+        values += "'HEAL', "
         values += str(source) + ', '
         values += str(source) + ', '
         values += str(start_health) + ', '
