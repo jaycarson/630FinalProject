@@ -1,5 +1,5 @@
 from random import choice
-import sqlite3
+import mysql.connector
 
 
 class ConnectionSQLite(object):
@@ -13,7 +13,14 @@ class ConnectionSQLite(object):
 
         open('commands.sql', 'w').close()
 
-        self.conn = sqlite3.connect('test.db')
+        self.db = mysql.connector.connect(
+            host='localhost',
+            user='user_name',
+            password='password',
+            database='database'
+        )
+
+        self.conn = self.db.cursor()
 
         try:
             self.conn.execute('DROP TABLE COMBAT_LOG')
@@ -155,14 +162,14 @@ class ConnectionSQLite(object):
         return self.conn.execute("SELECT AC FROM ARMORS WHERE NAME='" + str(name) + "'").fetchone()[0]
 
     def get_random_armor_name(self):
-        cursor = self.conn.execute('SELECT NAME FROM ARMORS')
+        cursor = self.conn.execute('SELECT NAME FROM ARMORS').fetchall()
         values = []
         for row in cursor:
             values.append(row[0])
         return choice(list(values))
 
     def get_random_weapon_name(self):
-        cursor = self.conn.execute('SELECT NAME FROM WEAPONS')
+        cursor = self.conn.execute('SELECT NAME FROM WEAPONS').fetchall()
         values = []
         for row in cursor:
             values.append(row[0])
