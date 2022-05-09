@@ -1,14 +1,12 @@
 import argparse
 from random import randrange, choice
 from Hero import Hero
-from ConnectionDataStructures import ConnectionDataStructures
 from ConnectionSQLite import ConnectionSQLite
 
 
 class Simulation(object):
     def __init__(self, debug):
         self.connection = ConnectionSQLite()
-        # self.connection = ConnectionDataStructures()
         self.hero_count = 50
         self.add_armors()
         self.add_weapons()
